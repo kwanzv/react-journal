@@ -1,10 +1,10 @@
+import * as React from "react";
 import "react-mde/lib/styles/css/react-mde-all.css";
 import ReactMde from "react-mde";
 import Showdown from "showdown";
 
 export default function Editor({
   value,
-  // eslint-disable-next-line react/prop-types
   setValue,
   selectedTab,
   setSelectedTab,

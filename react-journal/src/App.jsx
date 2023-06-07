@@ -15,7 +15,7 @@ export default function App() {
   function createNote() {
     const newNote = {
       id: nanoid(),
-      body: "Hello, is it me you're looking for",
+      body: "Hello, is it me you're looking for?",
     };
     setNotes((prevNotes) => [newNote, ...prevNotes]);
   }
@@ -29,7 +29,7 @@ export default function App() {
           direction="horizontal"
           className="split"
         >
-          <Sidebar notes={notes} />
+          <Sidebar notes={notes} createNote={createNote} />
           <Editor
             id="editor"
             value={value}
