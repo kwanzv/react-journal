@@ -3,17 +3,17 @@ import * as React from "react";
 // import { DayPicker } from "react-day-picker";
 // import "react-day-picker/dist/style.css";
 
-export default function Sidebar({ notes, createNote }) {
+export default function Sidebar({ notes, createNote, setNoteID }) {
   // const [selected, setSelected] = React.useState();
   // let footer = <p>Please pick a day.</p>;
   // if (selected) {
   //   footer = <p>You picked {format(selected, "PP")}.</p>;
   // }
 
-  const noteList = notes.map((note) => {
+  const noteList = notes.map((note, index) => {
     return (
-      <div className="note" key={note.id}>
-        {note.body}
+      <div className="note" key={note.id} onClick={() => setNoteID(note.id)}>
+        Note {index + 1}
       </div>
     );
   });

@@ -8,9 +8,8 @@ import { nanoid } from "nanoid";
 import "./index.css";
 
 export default function App() {
-  const [value, setValue] = React.useState("**Type something**");
-  const [selectedTab, setSelectedTab] = React.useState("write");
   const [notes, setNotes] = React.useState([]);
+  const [noteID, setNoteID] = React.useState((notes[0] && notes[0].id) || "");
 
   function createNote() {
     const newNote = {
@@ -18,6 +17,21 @@ export default function App() {
       body: "Hello, is it me you're looking for?",
     };
     setNotes((prevNotes) => [newNote, ...prevNotes]);
+    setNoteID(newNote.id);
+  }
+
+  function currentNote() {
+    return notes.find((note) => {
+      return note.id === noteID;
+    });
+  }
+
+  function updateNote(text) {
+    setNotes((prevNotes) =>
+      prevNotes.map((prevNote) => {
+        return prevNote.id === noteID ? { ...prevNote, body: text } : prevNote;
+      })
+    );
   }
 
   return (
@@ -29,13 +43,17 @@ export default function App() {
           direction="horizontal"
           className="split"
         >
-          <Sidebar notes={notes} createNote={createNote} />
+          <Sidebar
+            notes={notes}
+            createNote={createNote}
+            currentNote={currentNote()}
+            setNoteID={setNoteID}
+          />
           <Editor
             id="editor"
-            value={value}
-            setValue={setValue}
-            selectedTab={selectedTab}
-            setSelectedTab={setSelectedTab}
+            notes={notes}
+            currentNote={currentNote()}
+            updateNote={updateNote}
           />
         </Split>
       ) : (

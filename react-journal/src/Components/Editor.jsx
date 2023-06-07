@@ -3,12 +3,9 @@ import "react-mde/lib/styles/css/react-mde-all.css";
 import ReactMde from "react-mde";
 import Showdown from "showdown";
 
-export default function Editor({
-  value,
-  setValue,
-  selectedTab,
-  setSelectedTab,
-}) {
+export default function Editor({ currentNote, updateNote }) {
+  const [selectedTab, setSelectedTab] = React.useState("write");
+
   const converter = new Showdown.Converter({
     tables: true,
     simplifiedAutoLink: true,
@@ -18,8 +15,8 @@ export default function Editor({
 
   return (
     <ReactMde
-      value={value}
-      onChange={setValue}
+      value={currentNote.body}
+      onChange={updateNote}
       minEditorHeight={90}
       heightUnits="vh"
       selectedTab={selectedTab}
