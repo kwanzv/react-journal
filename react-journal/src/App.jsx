@@ -8,7 +8,9 @@ import { nanoid } from "nanoid";
 import "./index.css";
 
 export default function App() {
-  const [notes, setNotes] = React.useState([]);
+  const [notes, setNotes] = React.useState(
+    JSON.parse(localStorage.getItem("notes")) || []
+  );
   const [noteID, setNoteID] = React.useState((notes[0] && notes[0].id) || "");
 
   function createNote() {
@@ -19,6 +21,10 @@ export default function App() {
     setNotes((prevNotes) => [newNote, ...prevNotes]);
     setNoteID(newNote.id);
   }
+
+  React.useEffect(() => {
+    localStorage.setItem("notes", JSON.stringify(notes));
+  }, [notes]);
 
   function currentNote() {
     return notes.find((note) => {

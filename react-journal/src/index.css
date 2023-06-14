@@ -37,7 +37,7 @@ h3 {
 }
 
 .note {
-  background-color: #4a4e74;
+  background-color: gray;
   padding: 2rem;
   color: white;
   text-align: left;
@@ -89,4 +89,12 @@ h3 {
   margin-top: 2rem;
   font-size: 2rem;
   border-radius: 10px;
+}
+
+.selected-note {
+  background-color: #4a4e74;
+  padding: 2rem;
+  color: white;
+  text-align: left;
+  border-bottom: white 5px solid;
 }
