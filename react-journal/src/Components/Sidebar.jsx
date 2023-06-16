@@ -17,7 +17,7 @@ export default function Sidebar({ notes, createNote, setNoteID, currentNote }) {
         key={note.id}
         onClick={() => setNoteID(note.id)}
       >
-        Note {index + 1}
+        {note.body.split("\n")[0]}
       </div>
     );
   });
