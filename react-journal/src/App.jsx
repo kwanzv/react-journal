@@ -12,7 +12,6 @@ export default function App() {
     JSON.parse(localStorage.getItem("notes")) || []
   );
   const [noteID, setNoteID] = React.useState((notes[0] && notes[0].id) || "");
-  const [activeNote, setActiveNote] = React.useState();
 
   function createNote() {
     const newNote = {
@@ -32,6 +31,13 @@ export default function App() {
       return note.id === noteID;
     });
   }
+
+  function deleteNote(event, noteId) {
+    event.stopPropagation()
+    console.log(noteId)
+    setNotes(prevNotes => prevNotes.filter(note => note.id !== noteId));
+  }
+
 
   function updateNote(text) {
     setNotes(
@@ -68,14 +74,13 @@ export default function App() {
             createNote={createNote}
             currentNote={currentNote()}
             setNoteID={setNoteID}
-            activeNote={activeNote}
+            deleteNote={deleteNote}
           />
           <Editor
             id="editor"
             notes={notes}
             currentNote={currentNote()}
             updateNote={updateNote}
-            setActiveNote={setActiveNote}
           />
         </Split>
       ) : (

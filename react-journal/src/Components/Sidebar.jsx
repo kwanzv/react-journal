@@ -1,9 +1,14 @@
-import * as React from "react";
 // import { format } from "date-fns";
 // import { DayPicker } from "react-day-picker";
 // import "react-day-picker/dist/style.css";
 
-export default function Sidebar({ notes, createNote, setNoteID, currentNote }) {
+export default function Sidebar({
+  notes,
+  createNote,
+  setNoteID,
+  currentNote,
+  deleteNote,
+}) {
   // const [selected, setSelected] = React.useState();
   // let footer = <p>Please pick a day.</p>;
   // if (selected) {
@@ -17,7 +22,15 @@ export default function Sidebar({ notes, createNote, setNoteID, currentNote }) {
         key={note.id}
         onClick={() => setNoteID(note.id)}
       >
-        {note.body.split("\n")[0]}
+        <div className="sidebar-title">
+          <p>{note.body.split("\n")[0]} </p>
+          <button
+            className="delete-btn"
+            onClick={(event) => deleteNote(event, note.id)}
+          >
+            <i className="gg-trash"></i>
+          </button>
+        </div>
       </div>
     );
   });
