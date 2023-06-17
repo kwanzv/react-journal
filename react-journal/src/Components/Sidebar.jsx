@@ -10,7 +10,7 @@ export default function Sidebar({ notes, createNote, setNoteID, currentNote }) {
   //   footer = <p>You picked {format(selected, "PP")}.</p>;
   // }
 
-  const noteList = notes.map((note, index) => {
+  const noteList = notes.map((note) => {
     return (
       <div
         className={`note ${note.id === currentNote.id ? "selected-note" : ""}`}

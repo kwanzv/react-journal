@@ -9,9 +9,10 @@ import "./index.css";
 
 export default function App() {
   const [notes, setNotes] = React.useState(
-    () => JSON.parse(localStorage.getItem("notes")) || []
+    JSON.parse(localStorage.getItem("notes")) || []
   );
   const [noteID, setNoteID] = React.useState((notes[0] && notes[0].id) || "");
+  const [activeNote, setActiveNote] = React.useState();
 
   function createNote() {
     const newNote = {
@@ -33,10 +34,23 @@ export default function App() {
   }
 
   function updateNote(text) {
-    setNotes((prevNotes) =>
-      prevNotes.map((prevNote) => {
-        return prevNote.id === noteID ? { ...prevNote, body: text } : prevNote;
-      })
+    setNotes(
+      (prevNotes) => {
+        const newNotes = [];
+        for (let i = 0; i < prevNotes.length; i++) {
+          const prevNote = prevNotes[i];
+          if (prevNote.id === noteID) {
+            newNotes.unshift({ ...prevNote, body: text });
+          } else {
+            newNotes.push(prevNote);
+          }
+        }
+        return newNotes;
+      }
+
+      // prevNotes.map((prevNote) => {
+      //   return prevNote.id === noteID ? { ...prevNote, body: text } : prevNote;
+      // })
     );
   }
 
@@ -54,12 +68,14 @@ export default function App() {
             createNote={createNote}
             currentNote={currentNote()}
             setNoteID={setNoteID}
+            activeNote={activeNote}
           />
           <Editor
             id="editor"
             notes={notes}
             currentNote={currentNote()}
             updateNote={updateNote}
+            setActiveNote={setActiveNote}
           />
         </Split>
       ) : (
