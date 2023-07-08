@@ -9,12 +9,6 @@ export default function Sidebar({
   currentNote,
   deleteNote,
 }) {
-  // const [selected, setSelected] = React.useState();
-  // let footer = <p>Please pick a day.</p>;
-  // if (selected) {
-  //   footer = <p>You picked {format(selected, "PP")}.</p>;
-  // }
-
   const noteList = notes.map((note) => {
     return (
       <div
