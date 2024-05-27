@@ -17,7 +17,7 @@ export default function App() {
   function createNote() {
     const newNote = {
       id: nanoid(),
-      body: "Hello, is it me you're looking for?",
+      body: `Note ${notes.length + 1}`,
     };
     setNotes((prevNotes) => [newNote, ...prevNotes]);
     setCurrentNoteId(newNote.id);
@@ -34,8 +34,35 @@ export default function App() {
   }
 
   function deleteNote(event, noteId) {
+    // Prevent the event from propagating to parent elements.
     event.stopPropagation();
-    setNotes((prevNotes) => prevNotes.filter((note) => note.id !== noteId));
+
+    // Check if the currentNoteId is valid and notes array is not empty
+    if (
+      currentNoteId !== null && // currentNoteId should not be null
+      currentNoteId !== undefined && // currentNoteId should not be undefined
+      notes.find((note) => note.id === currentNoteId) !== undefined && // currentNoteId should exist in notes
+      notes.find((note) => note.id === currentNoteId) !== null && // currentNoteId should not be null in notes
+      notes.length > 0 // notes array should not be empty
+    ) {
+      // Create a new list of notes excluding the note with noteId
+      const newNotes = notes.filter((note) => note.id !== noteId);
+
+      // If the note to be deleted is the current note
+      if (currentNoteId === noteId) {
+        // Set the current note to the first note in the new list or null if newNotes is empty
+        const newCurrentNoteId = newNotes.length > 0 ? newNotes[0].id : null;
+        setCurrentNoteId(newCurrentNoteId);
+      }
+
+      // Update the notes state with the new list
+      setNotes(newNotes);
+    } else {
+      // Log an error if the conditions are not met
+      console.error(
+        "Error in deleteNote: currentNoteId is null or undefined, or notes is empty"
+      );
+    }
   }
 
   function updateNote(text) {

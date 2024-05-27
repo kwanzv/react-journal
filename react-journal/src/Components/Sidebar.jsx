@@ -1,20 +1,17 @@
-// import { format } from "date-fns";
-// import { DayPicker } from "react-day-picker";
-// import "react-day-picker/dist/style.css";
-
 export default function Sidebar({
   notes,
   createNote,
-  setNoteID,
+  setCurrentNoteId,
   currentNote,
   deleteNote,
 }) {
+  console.log(currentNote.id);
   const noteList = notes.map((note) => {
     return (
       <div
         className={`note ${note.id === currentNote.id ? "selected-note" : ""}`}
         key={note.id}
-        onClick={() => setNoteID(note.id)}
+        onClick={() => setCurrentNoteId(note.id)}
       >
         <div className="sidebar-title">
           <p>{note.body.split("\n")[0]} </p>
@@ -38,12 +35,6 @@ export default function Sidebar({
         </button>
       </div>
       {noteList}
-      {/* <DayPicker
-        mode="single"
-        selected={selected}
-        onSelect={setSelected}
-        footer={footer}
-      /> */}
     </section>
   );
 }
