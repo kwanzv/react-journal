@@ -2,30 +2,37 @@ import * as React from "react";
 import Sidebar from "./Components/Sidebar";
 import Editor from "./Components/Editor";
 import Split from "react-split";
-import { nanoid } from "nanoid";
+import { notesCollection, db } from "./firebase";
+import { addDoc, onSnapshot, doc, deleteDoc } from "firebase/firestore";
 
 import "./index.css";
 
 export default function App() {
-  const [notes, setNotes] = React.useState(
-    JSON.parse(localStorage.getItem("notes")) || []
-  );
+  const [notes, setNotes] = React.useState([]);
   const [currentNoteId, setCurrentNoteId] = React.useState(
     (notes[0] && notes[0].id) || ""
   );
 
-  function createNote() {
+  React.useEffect(() => {
+    const unsub = onSnapshot(notesCollection, (snapshot) => {
+      //Sync up local notes with firebase
+      const notesArray = snapshot.docs.map((doc) => {
+        return { ...doc.data(), id: doc.id };
+      });
+      setNotes(notesArray);
+      setCurrentNoteId(notesArray[0].id);
+    });
+    return unsub;
+  }, []);
+
+  async function createNote() {
+    // Create a new note in firebase
+
     const newNote = {
-      id: nanoid(),
       body: `Note ${notes.length + 1}`,
     };
-    setNotes((prevNotes) => [newNote, ...prevNotes]);
-    setCurrentNoteId(newNote.id);
+    await addDoc(notesCollection, newNote);
   }
-
-  React.useEffect(() => {
-    localStorage.setItem("notes", JSON.stringify(notes));
-  }, [notes]);
 
   function getCurrentNote() {
     return notes.find((note) => {
@@ -33,10 +40,7 @@ export default function App() {
     });
   }
 
-  function deleteNote(event, noteId) {
-    // Prevent the event from propagating to parent elements.
-    event.stopPropagation();
-
+  async function deleteNote(noteId) {
     // Check if the currentNoteId is valid and notes array is not empty
     if (
       currentNoteId !== null && // currentNoteId should not be null
@@ -46,17 +50,8 @@ export default function App() {
       notes.length > 0 // notes array should not be empty
     ) {
       // Create a new list of notes excluding the note with noteId
-      const newNotes = notes.filter((note) => note.id !== noteId);
-
-      // If the note to be deleted is the current note
-      if (currentNoteId === noteId) {
-        // Set the current note to the first note in the new list or null if newNotes is empty
-        const newCurrentNoteId = newNotes.length > 0 ? newNotes[0].id : null;
-        setCurrentNoteId(newCurrentNoteId);
-      }
-
-      // Update the notes state with the new list
-      setNotes(newNotes);
+      const docRef = doc(db, "notes", noteId);
+      await deleteDoc(docRef);
     } else {
       // Log an error if the conditions are not met
       console.error(

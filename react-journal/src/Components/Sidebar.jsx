@@ -1,3 +1,5 @@
+import { FaRegTrashAlt } from "react-icons/fa";
+
 export default function Sidebar({
   notes,
   createNote,
@@ -5,7 +7,6 @@ export default function Sidebar({
   currentNote,
   deleteNote,
 }) {
-  console.log(currentNote.id);
   const noteList = notes.map((note) => {
     return (
       <div
@@ -17,9 +18,9 @@ export default function Sidebar({
           <p>{note.body.split("\n")[0]} </p>
           <button
             className="delete-btn"
-            onClick={(event) => deleteNote(event, note.id)}
+            onClick={(event) => deleteNote(note.id)}
           >
-            <i className="gg-trash"></i>
+            <FaRegTrashAlt />
           </button>
         </div>
       </div>
