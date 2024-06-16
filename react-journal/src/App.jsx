@@ -3,15 +3,19 @@ import Sidebar from "./Components/Sidebar";
 import Editor from "./Components/Editor";
 import Split from "react-split";
 import { notesCollection, db } from "./firebase";
-import { addDoc, onSnapshot, doc, deleteDoc } from "firebase/firestore";
+import {
+  addDoc,
+  onSnapshot,
+  doc,
+  deleteDoc,
+  updateDoc,
+} from "firebase/firestore";
 
 import "./index.css";
 
 export default function App() {
   const [notes, setNotes] = React.useState([]);
-  const [currentNoteId, setCurrentNoteId] = React.useState(
-    (notes[0] && notes[0].id) || ""
-  );
+  const [currentNoteId, setCurrentNoteId] = React.useState(null);
 
   React.useEffect(() => {
     const unsub = onSnapshot(notesCollection, (snapshot) => {
@@ -20,7 +24,6 @@ export default function App() {
         return { ...doc.data(), id: doc.id };
       });
       setNotes(notesArray);
-      setCurrentNoteId(notesArray[0].id);
     });
     return unsub;
   }, []);
@@ -30,15 +33,17 @@ export default function App() {
 
     const newNote = {
       body: `Note ${notes.length + 1}`,
+      title: `Note ${notes.length + 1}`,
+      created: Date.now(),
+      updated: Date.now(),
     };
     await addDoc(notesCollection, newNote);
   }
 
-  function getCurrentNote() {
-    return notes.find((note) => {
-      return note.id === currentNoteId;
-    });
-  }
+  const sortedNotes = notes.sort((a, b) => b.updated - a.updated);
+
+  const currentNote =
+    notes.find((note) => note.id === currentNoteId) || notes[0];
 
   async function deleteNote(noteId) {
     // Check if the currentNoteId is valid and notes array is not empty
@@ -60,12 +65,12 @@ export default function App() {
     }
   }
 
-  function updateNote(text) {
-    setNotes((prevNotes) => {
-      const updatedNotes = prevNotes.map((note) => {
-        return note.id === currentNoteId ? { ...note, body: text } : note;
-      });
-      return updatedNotes;
+  async function updateNote(text) {
+    // Check if the currentNoteId is valid and notes array is not empty
+    const docRef = doc(db, "notes", currentNoteId);
+    await updateDoc(docRef, {
+      body: text,
+      updated: Date.now(),
     });
   }
 
@@ -79,16 +84,16 @@ export default function App() {
           className="split"
         >
           <Sidebar
-            notes={notes}
+            notes={sortedNotes}
             createNote={createNote}
-            currentNote={getCurrentNote()}
+            currentNote={currentNote}
             setCurrentNoteId={setCurrentNoteId}
             deleteNote={deleteNote}
           />
           <Editor
             id="editor"
-            notes={notes}
-            currentNote={getCurrentNote()}
+            notes={sortedNotes}
+            currentNote={currentNote}
             updateNote={updateNote}
           />
         </Split>
